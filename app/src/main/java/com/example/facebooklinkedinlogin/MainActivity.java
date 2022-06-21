@@ -3,6 +3,9 @@ package com.example.facebooklinkedinlogin;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,11 +14,15 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.facebook.FacebookSdk;
+import com.facebook.LoggingBehavior;
+import com.facebook.appevents.AppEventsLogger;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +47,8 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
@@ -60,8 +69,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
+        FacebookSdk.setClientToken("da1845b609ad584894395ea717d10be0");
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        if (BuildConfig.DEBUG) {
+            FacebookSdk.setIsDebugEnabled(true);
+            FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+        }
+      //  FacebookSdk.sdkInitialize(getApplicationContext());
         SharedPreferences fb_settings = getSharedPreferences(FB_LOGIN, 0);
         SharedPreferences email_settings = getSharedPreferences(GMAIL_LOGIN, 0);
         if (fb_settings.getString("fb_logged", "").toString().equals("fb_logged")) {
@@ -100,10 +117,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         fb_loginButton = findViewById(R.id.fblogin_button);
         callbackManager = CallbackManager.Factory.create();
+        FacebookSdk.sdkInitialize(MainActivity.this);
+
+
 
         fb_loginButton.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View view) {
+
+
                 LoginManager.getInstance().logInWithReadPermissions(MainActivity.this,Arrays.asList("email"));
 
                 LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

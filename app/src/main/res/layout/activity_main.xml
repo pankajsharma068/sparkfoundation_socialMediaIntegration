@@ -112,6 +112,6 @@
             android:layout_height="wrap_content"
             android:textSize="10dp"
             android:gravity="center_vertical"
-            android:text="2020 Mounika Ala for The Sparks Foundation"></TextView>
+            android:text="2022 Pankaj Sharma for The Sparks Foundation"></TextView>
     </LinearLayout>
 </RelativeLayout>
